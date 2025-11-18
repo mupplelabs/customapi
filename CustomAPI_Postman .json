@@ -1,0 +1,504 @@
+{
+  "info": {
+    "name": "CustomAPI ",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "welcome",
+      "event": [],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-CSRF-Token",
+            "value": "{{csrfToken}}",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "cookie",
+            "value": "isisessid={{sessionCookie}}",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Origin",
+            "value": "{{baseUrl}}",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "{{baseUrl}}/customapi",
+          "protocol": "",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "customapi"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "link creation",
+      "item": [
+        {
+          "name": "create documentation",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/customapi/18/link/create?describe",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customapi",
+                "18",
+                "link",
+                "create?describe"
+              ],
+              "query": [
+                {
+                  "key": "describe",
+                  "value": ""
+                },
+                {
+                  "key": "json",
+                  "value": ""
+                }
+              ],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "create hardlink",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/customapi/1/link/create",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customapi",
+                "1",
+                "link",
+                "create"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"source\": \"/ifs/rtl/README.txt\",\n    \"target\": \"/ifs/rtl/links/{{$randomFileName}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "create symlink",
+          "event": [],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/customapi/1/link/create?symbolic=true",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customapi",
+                "1",
+                "link",
+                "create?symbolic=true"
+              ],
+              "query": [
+                {
+                  "key": "symbolic",
+                  "value": "true"
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"source\": \"/ifs/rtl/README.txt\",\n    \"target\": \"/ifs/rtl/links/{{$randomFileName}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "hardlink enumeration",
+      "item": [
+        {
+          "name": "hardlink enum Documentation",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/customapi/1/link/enum?describe&json",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customapi",
+                "1",
+                "link",
+                "enum?describe&json"
+              ],
+              "query": [
+                {
+                  "key": "describe",
+                  "value": ""
+                },
+                {
+                  "key": "json",
+                  "value": ""
+                }
+              ],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"path\": \"/ifs/README.txt\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "hardlink enum",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "Origin",
+                "value": "{{baseUrl}}",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/customapi/1/link/enum",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customapi",
+                "1",
+                "link",
+                "enum"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"path\": \"/ifs/rtl/README.txt\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PAPI Session Handling",
+      "item": [
+        {
+          "name": "End Session",
+          "event": [],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/session/1/session",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "session",
+                "1",
+                "session"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Get Session",
+          "event": [],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "disabled": false,
+                "type": "default"
+              },
+              {
+                "key": "",
+                "value": "",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/session/1/session",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "session",
+                "1",
+                "session"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Start Session",
+          "event": [],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "",
+            "url": {
+              "raw": "{{baseUrl}}/session/1/session",
+              "protocol": "",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "session",
+                "1",
+                "session"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"services\": [\"platform\", \"namespace\", \"customapi\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "csrfToken",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "sessionCookie",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "$randomFileName",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "username",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "password",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

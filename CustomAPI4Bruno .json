@@ -1,0 +1,556 @@
+{
+  "name": "CustomAPI ",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "welcome",
+      "filename": "welcome.bru",
+      "seq": 2,
+      "settings": {
+        "encodeUrl": true,
+        "timeout": 0
+      },
+      "tags": [],
+      "request": {
+        "url": "{{baseUrl}}/customapi",
+        "method": "GET",
+        "headers": [
+          {
+            "name": "X-CSRF-Token",
+            "value": "{{csrfToken}}",
+            "enabled": true
+          },
+          {
+            "name": "cookie",
+            "value": "isisessid={{sessionCookie}}",
+            "enabled": true
+          },
+          {
+            "name": "Origin",
+            "value": "{{baseUrl}}",
+            "enabled": true
+          }
+        ],
+        "params": [],
+        "body": {
+          "mode": "json",
+          "json": "",
+          "formUrlEncoded": [],
+          "multipartForm": [],
+          "file": []
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "docs": "",
+        "auth": {
+          "mode": "inherit"
+        }
+      }
+    },
+    {
+      "type": "folder",
+      "name": "link creation",
+      "filename": "link creation",
+      "seq": 5,
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "link creation",
+          "seq": 5
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "create documentation",
+          "filename": "create documentation.bru",
+          "seq": 3,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "request": {
+            "url": "{{baseUrl}}/customapi/18/link/create?describe",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "enabled": true
+              },
+              {
+                "name": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "enabled": true
+              },
+              {
+                "name": "Origin",
+                "value": "{{baseUrl}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "describe",
+                "value": "",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "json",
+                "value": "",
+                "type": "query",
+                "enabled": false
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "create hardlink",
+          "filename": "create hardlink.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "request": {
+            "url": "{{baseUrl}}/customapi/1/link/create",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "enabled": true
+              },
+              {
+                "name": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "enabled": true
+              },
+              {
+                "name": "Origin",
+                "value": "{{baseUrl}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n    \"source\": \"/ifs/rtl/README.txt\",\n    \"target\": \"/ifs/rtl/links/{{$randomFileName}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "create symlink",
+          "filename": "create symlink.bru",
+          "seq": 2,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "request": {
+            "url": "{{baseUrl}}/customapi/1/link/create?symbolic=true",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "enabled": true
+              },
+              {
+                "name": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "enabled": true
+              },
+              {
+                "name": "Origin",
+                "value": "{{baseUrl}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "symbolic",
+                "value": "true",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n    \"source\": \"/ifs/rtl/README.txt\",\n    \"target\": \"/ifs/rtl/links/{{$randomFileName}}\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "hardlink enumeration",
+      "filename": "hardlink enumeration",
+      "seq": 4,
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "hardlink enumeration",
+          "seq": 4
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "hardlink enum Documentation",
+          "filename": "hardlink enum Documentation.bru",
+          "seq": 2,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "request": {
+            "url": "{{baseUrl}}/customapi/1/link/enum?describe&json",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "enabled": true
+              },
+              {
+                "name": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "enabled": true
+              },
+              {
+                "name": "Origin",
+                "value": "{{baseUrl}}",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "describe",
+                "value": "",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "json",
+                "value": "",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n    \"path\": \"/ifs/README.txt\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "hardlink enum",
+          "filename": "hardlink enum.bru",
+          "seq": 1,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": 0
+          },
+          "tags": [],
+          "request": {
+            "url": "{{baseUrl}}/customapi/1/link/enum",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": "{{csrfToken}}",
+                "enabled": true
+              },
+              {
+                "name": "cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "enabled": true
+              },
+              {
+                "name": "Origin",
+                "value": "{{baseUrl}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n    \"path\": \"/ifs/rtl/README.txt\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "PAPI Session Handling",
+      "filename": "PAPI Session Handling",
+      "seq": 3,
+      "root": {
+        "request": {
+          "auth": {
+            "mode": "inherit"
+          }
+        },
+        "meta": {
+          "name": "PAPI Session Handling",
+          "seq": 3
+        }
+      },
+      "items": [
+        {
+          "type": "http",
+          "name": "End Session",
+          "filename": "End Session.bru",
+          "seq": 1,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "{{baseUrl}}/session/1/session",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {
+              "res": "bru.setEnvVar(\"sessionCookie\", \"\")\nbru.setEnvVar(\"csrfToken\", \"\")"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Get Session",
+          "filename": "Get Session.bru",
+          "seq": 2,
+          "settings": {
+            "encodeUrl": true,
+            "timeout": "inherit",
+            "followRedirects": true,
+            "maxRedirects": 5
+          },
+          "tags": [],
+          "request": {
+            "url": "{{baseUrl}}/session/1/session",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "isisessid={{sessionCookie}}",
+                "enabled": true
+              },
+              {
+                "name": "",
+                "value": "",
+                "enabled": true
+              }
+            ],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "Start Session",
+          "filename": "Start Session.bru",
+          "seq": 3,
+          "settings": {},
+          "tags": [],
+          "request": {
+            "url": "{{baseUrl}}/session/1/session",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"services\": [\"platform\", \"namespace\", \"customapi\"]\n}",
+              "formUrlEncoded": [],
+              "multipartForm": [],
+              "file": []
+            },
+            "script": {
+              "res": "//bru.setEnvVar(\"sessionCookie\", res.headers['set-cookie'][0]);\n//bru.setEnvVar(\"csrfToken\", res.headers['x-csrf-token']);\nconst jar = bru.cookies.jar();\nconst sessionCookie = await jar.getCookie(\"{{baseUrl}}\", \"isisessid\");\nconst xcsrfToken   = await jar.getCookie(\"{{baseUrl}}\", \"isicsrf\");\nbru.setEnvVar(\"sessionCookie\", sessionCookie.value);\nbru.setEnvVar(\"csrfToken\", xcsrfToken.value);\nconsole.log(\"sessionCookie : \" + sessionCookie.value);\nconsole.log(\"xcsrfToken : \" + xcsrfToken.value);\n"
+            },
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "inherit"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "activeEnvironmentUid": "TB7PW73NGrJi7xE4VxJtv",
+  "environments": [
+    {
+      "variables": [
+        {
+          "name": "sessionCookie",
+          "value": "",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        },
+        {
+          "name": "csrfToken",
+          "value": "",
+          "enabled": true,
+          "secret": false,
+          "type": "text"
+        }
+      ],
+      "name": "CustomAPI"
+    }
+  ],
+  "root": {
+    "request": {
+      "vars": {
+        "req": [
+          {
+            "name": "baseUrl",
+            "value": "https://192.168.188.212:8080",
+            "enabled": true,
+            "local": false,
+            "uid": "Do957DW0ziX48xHFPyWn6"
+          },
+          {
+            "name": "username",
+            "value": "stephan",
+            "enabled": true,
+            "local": false,
+            "uid": "XquFkX0UoyMmWx01sPSdN"
+          },
+          {
+            "name": "password",
+            "value": "a",
+            "enabled": true,
+            "local": false,
+            "uid": "PLlPyILdS5BgUal2L8F93"
+          }
+        ]
+      }
+    }
+  },
+  "brunoConfig": {
+    "version": "1",
+    "name": "CustomAPI ",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ],
+    "size": 0.00372314453125,
+    "filesCount": 14
+  }
+}
