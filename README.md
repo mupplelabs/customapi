@@ -2,10 +2,10 @@
 
 This script adds a custom api to OneFS to provide customizable REST API endpoints such as:
 
-- auditviewer - programatic access to cluster protocol and config audit information
-- isi_s3_setkey - an endpoint to set s3 access keys and secrets with custom values
-- sysctls - returns the values of a configurable set of sysctls
-- pass thru - non-filtered pass thru of system zone exclusive papi endpoints into a given access zone.
+- auditviewer 		- programatic access to cluster protocol and config audit information
+- isi_s3_setkey 	- endpoint to set s3 access keys and secrets with custom values
+- hardlink/symlink  - create and manage hard and symbolic link between any two paths in OneFS
+- sysctls 			- returns the values of a configurable set of sysctls
 
 The customapi comes with documentation built in. </br>
 Access <a>https://\<your-cluster-or-node\>:8080/customapi</a> to get a list of available endpoints.
