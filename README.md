@@ -2,8 +2,8 @@
 
 This script adds a custom api to OneFS to provide customizable REST API endpoints such as:
 
-- isi_s3_setkey - and endpoint to set s3 access keys and secrets with custom values
-- quotas - prefiltered quota management from non-system zones
+- auditviewer - programatic access to cluster protocol and config audit information
+- isi_s3_setkey - an endpoint to set s3 access keys and secrets with custom values
 - sysctls - returns the values of a configurable set of sysctls
 - pass thru - non-filtered pass thru of system zone exclusive papi endpoints into a given access zone.
 
@@ -109,7 +109,7 @@ For mor details on a command, use:
 <a>https://\<your-cluster-or-node\>:8080/customapi</a> 
 
 ```
-Welcome to the custom REST API v.19.
+Welcome to the custom REST API v.0.2.0.
     
     With great power comes great responsibility. - Use at your own risk.
     This API allows you to make HTTP calls to the interfaces listed below.
@@ -121,10 +121,10 @@ Welcome to the custom REST API v.19.
 
     Available endpoints:
 
-	/18/protocols/s3/keys/<USER>
-	/18/sysctls
-	/18/cluster/identity
-	/6/snapshot/snapshots
+	/1/auditviewer
+	/1/link/create
+	/1/link/enum
+	/1/protocols/s3/keys/<USER>
 ```
 
 
