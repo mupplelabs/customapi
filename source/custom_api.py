@@ -1,21 +1,22 @@
 #! /bin/env python3
 
-__doc__         = 'Custom API for the OneFS PAPI.'
-__version__     = '0.1.0'
+__doc__         = 'Custom API extension for the PowerScale OneFS.'
+__version__     = '0.2.0'
 __author__      = 'Stephan Esche'
 __contact__     = 'stephan.esche@dell.com'
-__copyright__   = 'Copyright (C) 2020-2025, Dell Inc. All rights reserved.'
+__copyright__   = 'Copyright (C) 2020-2026, Dell Inc. All rights reserved.'
 __api_version__ = '1' # API version, starting with the current version of the PAPI (OneFS9.7.0)
 
 import os
-import sys
 from pathlib import Path
 import re
 import subprocess
 import configparser
+from unittest import case
 from flask import Flask, request, Response, jsonify, cli, abort
 from flask.logging import default_handler
 from isi.papi import basepapi
+import isi.config as isi_config
 import json
 import logging
 from logging.handlers import RotatingFileHandler
@@ -24,6 +25,9 @@ urllib3.disable_warnings()
 
 from functools import lru_cache
 from isi_authorizer import isi_auth, CacheTTLHash
+
+__NODE_ID__  = isi_config.getNode().get('node id')  # Get the local node ID
+__NODE_LNN__ = isi_config.getNode().get('lnn')      # Get the local node number
 
 error_code_mapping = {
     "AEC_TRANSIENT": 
@@ -105,7 +109,7 @@ error_code_mapping = {
         "HTTP status": "403 Forbidden",
         "HTTP error code": 403
         },
-    "AEC_NAMETOO_LONG": {"Description": "The specified request has an object name size that is too long.", 
+    "AEC_NAME_TOO_LONG": {"Description": "The specified request has an object name size that is too long.", 
         "HTTP status": "403 Forbidden",
         "HTTP error code": 403
         },
@@ -176,15 +180,6 @@ log_file               = api_config.get('app', 'logfile',                  fallb
 
 # Endpoint Configuration
 
-quotas_enabled          = api_config.get('quotas', 'enabled',                    fallback=False) 
-protect_root_quota      = api_config.get('quotas', 'protect_root_quota',         fallback=True) 
-enable_bulk_delete      = api_config.get('quotas', 'enable_bulk_delete',         fallback=False) 
-quotas_allowed_zones    = get_json_from_config('quotas', 'zones',                fallback=['all']) 
-quotas_privileges       = get_json_from_config('quotas', 'privileges',           fallback=['ISI_PRIV_LOGIN_PAPI'])
-quotas_allowed_role     = api_config.get('quotas', 'rbac_role',                  fallback=None)
-quotas_allowed_user     = api_config.get('quotas', 'username',                   fallback=None) 
-quotas_allowed_group    = api_config.get('quotas', 'group',                      fallback=None)
-
 S3_keyapi_enabled       = api_config.get('isi_s3_setkey', 'enabled',             fallback=False) 
 isiS3Command            = api_config.get('isi_s3_setkey', 'bin_path',            fallback="/usr/bin/isi_s3_setkey") 
 S3_Privileges           = get_json_from_config('isi_s3_setkey', 'privileges',    fallback=['ISI_PRIV_LOGIN_PAPI', 'ISI_PRIV_S3']) 
@@ -216,6 +211,13 @@ link_api_zones          = get_json_from_config('link_api', 'zones',             
 link_api_rbac_role      = api_config.get('link_api', 'rbac_role',                fallback=None) 
 link_api_allowed_user   = api_config.get('link_api', 'username',                 fallback=None) 
 link_api_allowed_group  = api_config.get('link_api', 'group',                    fallback=None) 
+
+audit_enabled           = api_config.get('auditviewer', 'enabled',                fallback=False)
+audit_privileges        = get_json_from_config('auditviewer', 'privileges',       fallback=['ISI_PRIV_LOGIN_PAPI', 'ISI_PRIV_AUDIT'])
+audit_zones             = get_json_from_config('auditviewer', 'zones',            fallback=['System']) 
+audit_rbac_role         = api_config.get('auditviewer', 'rbac_role',              fallback=None) 
+audit_allowed_user      = api_config.get('auditviewer', 'username',               fallback=None) 
+audit_allowed_group     = api_config.get('auditviewer', 'group',                  fallback=None)
 
 ### Flask setup ###
 app = Flask(__name__)
@@ -577,6 +579,62 @@ if link_api_enabled :
             }
         else :
             return jsonify({'error': 'path is required', 'error_code': 400}), 400
+        return jsonify(output), 200
+
+if audit_enabled :
+    from auditor import auditViewer_describe, auditViewer
+    app.logger.info("Audit Viewer API enabled")
+    @app.route(f'/{__api_version__}/auditviewer', methods=['GET'])
+    @isi.auth(privileges=audit_privileges, zones=audit_zones, username=audit_allowed_user, group=audit_allowed_group, role=audit_rbac_role)
+    def audit_route() :
+        """
+        Retrieves audit log entries from OneFS.
+
+        Parameters:
+            nodeid (str): The ID of the node to retrieve audit information from. Defaults to __NODE_ID__.
+            topic (str): The topic to retrieve audit information for. Defaults to 'protocol'.
+            start_time (int): The start time of the audit log in EPOCH seconds. Defaults to 0.
+            end_time (int): The end time of the audit log in EPOCH seconds. Defaults to None.
+
+        Returns:
+            tuple: A tuple containing a status string and a dictionary.
+                If the status is "success", the dictionary contains a key "entries" with a list of audit log entries.
+                If the status is "failed", the dictionary contains a key "error" with an error message.
+        """
+        this_endpoint = request.headers.get('X-api-location', 'unknown')
+        params = dict(request.args)
+
+        # describe
+
+        if 'describe' in params :
+            if 'json' in params :
+                return jsonify(auditViewer_describe(this_endpoint, __api_version__, audit_privileges, True)), 200
+            else :
+                return Response(auditViewer_describe(this_endpoint, __api_version__, audit_privileges, False), 200, mimetype='text/plain'), 200
+        
+        # extract parameters
+
+        nodeid      = params.get('nodeid', __NODE_ID__)
+        topic       = params.get('topic', 'protocol')
+        start_time  = params.get('start_time', 0)
+        end_time    = params.get('end_time', None)
+        try:
+            limit   = int(params.get('limit', 1000))
+        except ValueError:
+            limit = 1000
+
+        status, output = auditViewer(nodeid, topic, limit, start_time, end_time)
+        app.logger.debug(f"Audit Viewer: {status} : Output: {output}")
+        if status != 'success' :
+            # body={'errors': [{'code': 'AEC_NOT_FOUND', 'message': 'Path not found.'}]}
+            match output['error_code'] :
+                case 400 :
+                    PAPI_CODE = 'AEC_BAD_REQUEST'
+                case 500 :
+                    PAPI_CODE = 'AEC_SYSTEM_INTERNAL_ERROR'
+                case _ :
+                    PAPI_CODE = 'AEC_SYSTEM_INTERNAL_ERROR'
+            raise basepapi.PapiError(uri=this_endpoint, status=output['error_code'], body={ 'errors' : [{'code': PAPI_CODE , 'message': output['error']}] }, headers={'content-type': 'application/json', 'allow': 'GET', 'status': output['status']})
         return jsonify(output), 200
 
 # Jim's Sysctl API:    
