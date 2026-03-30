@@ -19,12 +19,16 @@ Endpoints can be individually configured, disabled and enabled as required via a
 
 Status of the Service can be controlled via an easy to use control script.
 
+***Note: None of this is officially supported!***
+
 ## Requirements
 The code is written in python and requires version 3.8 minimum and has been tested with OneFS 9.12.
 The api requires changes to the clusters webui_httpd.config, to automate startup of the script it self a custom crontab is required in addition.
 
 ## Security:
-To make this work the apache proxy modules are required. Note: these are disabled if the STIG hardening profiles are enabled on a cluster!
+To make this work the apache proxy modules are required. 
+
+**Note:** these are disabled if the STIG hardening profiles are enabled on a cluster!
 
 ## Installation
 - Copy the 'tar.gz' package and install script `installer.py` to `/ifs/data/Isilon_Support/`
