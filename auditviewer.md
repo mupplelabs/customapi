@@ -23,11 +23,11 @@ An endpoint to retrieve information from OneFS audit logs.</br>
 **Request Body:** ```None```
 
 **Application Notes:**
-•	The logs are per Node; it is not currently possible to get data from a full cluster in a single call.
-•	Even though audit events are logged with a nano second precision ```start_time``` only acts at full second precision.
-The ```end_time``` parameter however applies at full precision.
-•	If the output is limited the API tells you the last timestamp collected.
-Using this for programmatically fetching logs might result in duplicate entries due to the lower precision of ```start_time```.
+- The logs are per Node; it is not currently possible to get data from a full cluster in a single call.
+- Even though audit events are logged with a nano second precision ```start_time``` only acts at full second precision.
+  </br>The ```end_time``` parameter however applies at full precision.
+- If the output is limited the API tells you the last timestamp collected.
+  </br>Using this for programmatically fetching logs might result in duplicate entries due to the lower precision of ```start_time```.
 
 
 
