@@ -39,20 +39,17 @@ def validateTimeType(time, tag:str = "start_time") -> float :
         TypeError: If the given time argument is not one of the supported types.
         ValueError: If the given time argument exceeds the unix epoch maximum.
     """
-    match time :
-        case float() :
-            # start_time is in seconds
-            timestamp = time
-        case int() :
-            # start_time is in seconds with ms precision 
-            timestamp = float(time) 
-        case str() :
-            timestamp = checkTimeString(time, tag)
-        case datetime.datetime() :
-            timestamp = time.timestamp()
-        case _ :
-            supported_types : list = ["datetime.datetime", "str", "float", "int"]
-            raise TypeError(f"{tag} must be one of the following types: {', '.join([t for t in supported_types])}, not {type(time).__name__}")
+    if isinstance(time, datetime.datetime) :
+        timestamp = time.timestamp()
+    elif isinstance(time, str) :
+        timestamp = checkTimeString(time, tag)
+    elif isinstance(time, float) :
+        timestamp = time
+    elif isinstance(time, int) :
+        timestamp = float(time)
+    else :
+        supported_types : list = ["datetime.datetime", "str", "float", "int"]
+        raise TypeError(f"{tag} must be one of the following types: {', '.join([t for t in supported_types])}, not {type(time).__name__}")
     
     # test if times exceed unix epoch maximum
     if timestamp >= 2147483647 :
@@ -166,6 +163,43 @@ def auditViewer_describe(myAPI : str, endpoint_version : int, privileges : list,
                     "description": "The timestamp of the last entry in the result if the result is limited."
                 }
             }    
+        },
+        "GET_error_schema":{
+            "type": "object",
+            "description": "A list of errors that may be returned.",
+            "additionalProperties": False,
+            "properties": {
+                "errors": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "description": "An object describing a single error.",
+                    "additionalProperties": False,
+                    "properties": {
+                    "code": {
+                        "description": "The error code.",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 8192
+                    },
+                    "field": {
+                        "description": "The field with the error if applicable.",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 8192
+                    },
+                    "message": {
+                        "description": "The error message.",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 8192
+                    }
+                    }
+                },
+                "minItems": 1,
+                "maxItems": 65535
+                }
+            }
         }
     }
 
@@ -183,10 +217,21 @@ Arguments:
 
     Note: start_time and end_time strings are expected to be formatted as 'YYYY-MM-DD HH:MM:SS' 
 
+Application Notes:
+
+    - The logs are per Node; it is not currently possible to get data from a full cluster in a single call.
+    - Even though audit events are logged with a nano second precision start_time only acts at full second precision.
+      The end_time parameter however applies at full precision.
+    - If the output is limited the API tells you the last timestamp collected.
+      Using this for programmatically fetching logs might result in duplicate entries due to the lower precision of start_time.
+
 Request Body: None
 
 Response Schema:
-{json.dumps(audit_doc['GET_output_schema'], indent=4)}"""
+{json.dumps(audit_doc['GET_output_schema'], indent=4)}
+
+Error Schema:
+{json.dumps(audit_doc['GET_error_schema'], indent=4)}"""
     
     if get_json :
         return audit_doc

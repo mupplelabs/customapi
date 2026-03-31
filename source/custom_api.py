@@ -626,14 +626,7 @@ if audit_enabled :
         status, output = auditViewer(nodeid, topic, limit, start_time, end_time)
         app.logger.debug(f"Audit Viewer: {status} : Output: {output}")
         if status != 'success' :
-            # body={'errors': [{'code': 'AEC_NOT_FOUND', 'message': 'Path not found.'}]}
-            match output['error_code'] :
-                case 400 :
-                    PAPI_CODE = 'AEC_BAD_REQUEST'
-                case 500 :
-                    PAPI_CODE = 'AEC_SYSTEM_INTERNAL_ERROR'
-                case _ :
-                    PAPI_CODE = 'AEC_SYSTEM_INTERNAL_ERROR'
+            PAPI_CODE = 'AEC_BAD_REQUEST' if output['error_code'] == 400 else 'AEC_SYSTEM_INTERNAL_ERROR'
             raise basepapi.PapiError(uri=this_endpoint, status=output['error_code'], body={ 'errors' : [{'code': PAPI_CODE , 'message': output['error']}] }, headers={'content-type': 'application/json', 'allow': 'GET', 'status': output['status']})
         return jsonify(output), 200
 
