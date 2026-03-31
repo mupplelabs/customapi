@@ -1,7 +1,7 @@
 #! /bin/env python3
 
 __doc__         = 'Custom API extension for the PowerScale OneFS.'
-__version__     = '0.2.0'
+__version__     = '0.2.1'
 __author__      = 'Stephan Esche'
 __contact__     = 'stephan.esche@dell.com'
 __copyright__   = 'Copyright (C) 2020-2026, Dell Inc. All rights reserved.'
