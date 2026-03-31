@@ -12,7 +12,7 @@
 These are the files:
 - custom_api.py
 - isi_authorizer.py
-- isi_s3_describe.py
+- s3_keys_describe.py
 - auditor.py
 
 ### 3. Add the management script and config to ```/ifs/data/Isilon_Support/customapi/```
