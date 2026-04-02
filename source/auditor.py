@@ -64,10 +64,10 @@ def auditViewer(node_id : str, topic : str = "protocol", limit : int = 1000, sta
 
     Parameters:
         node_id (str): The ID of the node to retrieve audit information from.
-        topic (str): The topic of the logs to retrieve. Defaults to "protocol".
-        limit (int): The number of entries to limit the result to. Defaults to 1000. -1 for no limit.
+        topic (str)  : The topic of the logs to retrieve. Defaults to "protocol".
+        limit (int)  : The number of entries to limit the result to. Defaults to 1000. -1 for no limit.
         start_time (int/str/float/datetime.datetime): The start time of the time range to retrieve logs for. Defaults to 0.
-        end_time (int/str/float/datetime.datetime): The end time of the time range to retrieve logs for. Defaults to None.
+        end_time (int/str/float/datetime.datetime)  : The end time of the time range to retrieve logs for. Defaults to None.
 
     Returns:
         tuple: A tuple containing a status string and a dictionary.
@@ -76,10 +76,13 @@ def auditViewer(node_id : str, topic : str = "protocol", limit : int = 1000, sta
     """
     # validate time arguments
     try: 
-        start_time_seconds = validateTimeType(start_time, "start_time") if start_time else 0
+        start_time_seconds = validateTimeType(start_time, "start_time") if start_time else 0.0
         end_time_seconds   = validateTimeType(end_time, "end_time") if end_time else None
     except Exception as e :
         return "failed", { 'error' : str(e), 'error_code' : 400, "status" : "400 Bad Request" }
+
+    if end_time and start_time_seconds > end_time_seconds :
+        return "failed", { 'error' : "start_time must be less than end_time", 'error_code' : 400, "status" : "400 Bad Request" }    
 
     entries     : list = []
     entry       : dict = {}
@@ -91,17 +94,18 @@ def auditViewer(node_id : str, topic : str = "protocol", limit : int = 1000, sta
             while payload:
                 entry = json.loads(payload)
                 payload = viewer.get(block=False)
+                if not start_time_seconds.is_integer() and entry.get('timestamp', 1000000) / 1000000 < start_time_seconds :
+                    continue # if start_time is NOT an integer, skip entries that are before start_time with full precision
                 if end_time != None and entry.get('timestamp', 1000000) / 1000000 > end_time_seconds :
                     break # or should we "pass" here? in other words is it safe to assume the audit log is sorted? 
-                else : 
-                    count += 1
+                count += 1
+                if limit != -1 and count > limit :
+                    break # if we have reached the limit, break
+                else :
                     entries.append(entry)
-                if limit != -1 and count >= limit :
-                    break
-            response = { 'entries' : entries, 'count' : count }
-            if limit != -1 and count >= limit :
-                print(f"Limiting result to {limit} entries")
-                response['resume_ts'] = entry.get('timestamp', 1000000) / 1000000   
+            response = { 'entries' : entries, 'count' : len(entries) }
+            if limit != -1 and count > limit :
+                response['resume_ts'] = float(entry.get('timestamp', 1000000) / 1000000)   
             else :
                 response['resume_ts'] = None
             return "success", response
@@ -221,10 +225,6 @@ Arguments:
 Application Notes:
 
     - The logs are per Node; it is not currently possible to get data from a full cluster in a single call.
-    - Even though audit events are logged with a nano second precision start_time only acts at full second precision.
-      The end_time parameter however applies at full precision.
-    - If the output is limited the API tells you the last timestamp collected.
-      Using this for programmatically fetching logs might result in duplicate entries due to the lower precision of start_time.
 
 Request Body: None
 
